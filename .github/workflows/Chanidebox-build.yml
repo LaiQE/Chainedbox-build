@@ -78,15 +78,7 @@ jobs:
         git clone $REPO_URL -b $REPO_BRANCH armbian
         ln -sf /workdir/armbian $GITHUB_WORKSPACE/armbian
         cd armbian
-
-    - name: build
-      id: compile
-      run: |
-        cp –r $GITHUB_WORKSPACE/$userpatches/ armbian 
-        cd armbian
-        sudo ./compile.sh  BOARD= $BOARD BRANCH= $BRANCH RELEASE= $RELEASE BUILD_MINIMAL= $BUILD_MINIMAL BUILD_DESKTOP= $BUILD_DESKTOP KERNEL_ONLY= $KERNEL_ONLY KERNEL_CONFIGURE= $KERNEL_CONFIGURE 
-        echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
-        echo "FILE_DATE=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+        ls
 
 
       - name: 系统镜像打包
