@@ -54,18 +54,21 @@ jobs:
         sudo chown $USER:$GROUPS /workdir
 
     - name: Clone source code
-      working-directory: /workdir
+       working-directory: /workdir
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH armian
         ln -sf /workdir/armian $GITHUB_WORKSPACE/armian
         cd $GITHUB_WORKSPACE
+        echo “ GITHUB_WORKSPACE LS ”
         ls
         mv $GITHUB_WORKSPACE/userpatches /workdir/armian
         cd armian
         useVersionInfo=$(git show -s --date=short --format="Author: %an<br/>date: %cd<br/>commit: %s<br/>commit hash: %H")
         echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
+        echo $useVersionInfo
+        echo armbian ls
         ls
-        cd / && ls
+      
         
 
