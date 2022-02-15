@@ -25,28 +25,6 @@ on:
     - cron: '0 22 * * *'
     
 #环境变量配置
-env:
-  REPO_URL: https://github.com/armbian/build
-  REPO_BRANCH: master
-  BOARD: rock64
-  BRANCH: edge
-  RELEASE: buster
-  BUILD_MINIMAL: no
-  BUILD_DESKTOP: no
-  KERNEL_ONLY: yes
-  KERNEL_CONFIGURE: yes
-  TZ: Asia/Shanghai
-#---------------------------------------
-  FEEDS_CONF: armv8/plus/feeds.conf.default
-  CONFIG_FILE: armv8/plus/.config
-  DIY_P1_SH: armv8/plus/diy-part1.sh
-  DIY_P2_SH: armv8/plus/diy-part2.sh
-  UPLOAD_BIN_DIR: false
-  UPLOAD_FIRMWARE: false
-  UPLOAD_RELEASE: true
-  TZ: Asia/Shanghai
-  FILE_NAME: ROOTFS_PLUS
-  PRODUCT_NAME: ARMv8_PLUS
 
 #-------------------------------------------
 jobs:
