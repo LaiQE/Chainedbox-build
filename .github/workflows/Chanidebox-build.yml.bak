@@ -44,10 +44,10 @@ env:
   TZ: Asia/Shanghai
 
     steps:
-    - name: 系统检出
+    - name: Checkout
       uses: actions/checkout@main
 
-    - name: 初始化环境
+    - name: Initialization environment
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -60,7 +60,7 @@ env:
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
 
-    - name: 克隆源代码
+    - name: Clone source code
       working-directory: /workdir
       run: |
         df -hT $PWD
