@@ -70,5 +70,5 @@ jobs:
         echo armbian ls
         ls
       
-        
+        sudo ./compile.sh BOARD=rock64 BRANCH=current BUILD_MINIMAL=no BUILD_DESKTOP=no KERNEL_ONLY=yes KERNEL_CONFIGURE=yes MAINLINE_MIRROR=tuna DOWNLOAD_MIRROR=china
 
