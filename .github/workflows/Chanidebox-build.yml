@@ -1,0 +1,47 @@
+name: build-chanidebox
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: 运行单行脚本
+        run: sudo apt-get update && sudo apt-get upgrade && sudo apt-get install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
+      - name: 运行单行脚本
+        run: sudo ./compile.sh  BOARD=rock64 BRANCH=edge RELEASE=buster BUILD_MINIMAL=no BUILD_DESKTOP=no KERNEL_ONLY=yes KERNEL_CONFIGURE=yes 
+      # Runs a set of commands using the runners shell
+      #- name: 运行多行脚本
+      #  run: |
+      #    echo Add other actions to build,
+      #    echo test, and deploy your project.
+      - name: 系统镜像打包
+        run: |
+          rm -rf ./artifact/
+          mkdir -p ./artifact/
+          find ./output/ -name "*img" | xargs -i sudo xz -v {} 
+          find ./output/ -name "*img*" | xargs -i sudo mv -f {} ./artifact/
+      - name: 上传系统镜像
+        uses: actions/upload-artifact@master
+        if: always()
+        with:
+          name: Armbian_bullseye
+          path: ./artifact/
