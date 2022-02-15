@@ -71,16 +71,6 @@ jobs:
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
 
-    - name: 克隆代码
-      working-directory: /workdir
-      run: |
-        df -hT $PWD
-        git clone $REPO_URL -b $REPO_BRANCH armbian
-        ln -sf /workdir/armbian $GITHUB_WORKSPACE/armbian
-        cd armbian
-        ls
-
-
       - name: 系统镜像打包
         run: |
           rm -rf ./artifact/
