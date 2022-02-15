@@ -81,7 +81,7 @@ jobs:
         useVersionInfo=$(git show -s --date=short --format="Author: %an<br/>date: %cd<br/>commit: %s<br/>commit hash: %H")
         echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
 
-    - name: 编译系统
+    - name: build
       id: compile
       run: |
         cp –r $GITHUB_WORKSPACE/$userpatches/ armbian 
