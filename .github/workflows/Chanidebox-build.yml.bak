@@ -25,12 +25,6 @@ on:
     - cron: '0 22 * * *'
     
 #环境变量配置
-
-#-------------------------------------------
-jobs:
-  build:
-    runs-on: ubuntu-20.04
-
 env:
   REPO_URL: https://github.com/armbian/build
   REPO_BRANCH: master
@@ -42,6 +36,11 @@ env:
   KERNEL_ONLY: yes
   KERNEL_CONFIGURE: yes
   TZ: Asia/Shanghai
+
+#-------------------------------------------
+jobs:
+  build:
+    runs-on: ubuntu-20.04
 
     steps:
     - name: Checkout
