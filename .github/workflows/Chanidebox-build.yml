@@ -61,7 +61,7 @@ jobs:
         ln -sf /workdir/armian $GITHUB_WORKSPACE/armian
         cd $GITHUB_WORKSPACE
         ls
-        cp –r $GITHUB_WORKSPACE/userpatches /workdir/armian
+        mv $GITHUB_WORKSPACE/userpatches /workdir/armian
         cd armian
         useVersionInfo=$(git show -s --date=short --format="Author: %an<br/>date: %cd<br/>commit: %s<br/>commit hash: %H")
         echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
