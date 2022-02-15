@@ -31,6 +31,18 @@ jobs:
   build:
     runs-on: ubuntu-20.04
 
+env:
+  REPO_URL: https://github.com/armbian/build
+  REPO_BRANCH: master
+  BOARD: rock64
+  BRANCH: edge
+  RELEASE: buster
+  BUILD_MINIMAL: no
+  BUILD_DESKTOP: no
+  KERNEL_ONLY: yes
+  KERNEL_CONFIGURE: yes
+  TZ: Asia/Shanghai
+
     steps:
     - name: 系统检出
       uses: actions/checkout@main
@@ -39,7 +51,6 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo -E apt-get -qq update
         sudo -E apt-get -qq install libncurses-dev flex bison openssl libssl-dev dkms libelf-dev libudev-dev libpci-dev libiberty-dev autoconf
         sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
