@@ -59,31 +59,3 @@ jobs:
         useVersionInfo=$(git show -s --date=short --format="Author: %an<br/>date: %cd<br/>commit: %s<br/>commit hash: %H")
         echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
 
-    - name: Install patch
-      run: cp –r $GITHUB_WORKSPACE/$userpatches/ armbian 
-
-    - name: Compile the firmware
-      id: compile
-      run: |
-        cd armian
-        echo -e "$(nproc) thread compile"
-        make -j$(nproc) || make -j1 || make -j1 V=s
-        echo "::set-output name=status::success"
-        grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
-        [ -s DEVICE_NAME ] && echo "DEVICE_NAME=$(cat DEVICE_NAME)" >> $GITHUB_ENV
-        echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
-        echo "FILE_DATE=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
-
-      - name: 系统镜像打包
-        run: |
-          rm -rf ./artifact/
-          mkdir -p ./artifact/
-          find ./output/ -name "*img" | xargs -i sudo xz -v {} 
-          find ./output/ -name "*img*" | xargs -i sudo mv -f {} ./artifact/
-      - name: 上传系统镜像
-        uses: actions/upload-artifact@master
-        if: always()
-        with:
-          name: Armbian_bullseye
-          path: ./artifact/
-          ${{ env.useVersionInfo }}
