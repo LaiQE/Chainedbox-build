@@ -81,14 +81,10 @@ jobs:
         useVersionInfo=$(git show -s --date=short --format="Author: %an<br/>date: %cd<br/>commit: %s<br/>commit hash: %H")
         echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
 
-    - name: 添加补丁
-      run: |
-        cp –r $GITHUB_WORKSPACE/$userpatches/ armbian 
-
-
     - name: 编译系统
       id: compile
       run: |
+        cp –r $GITHUB_WORKSPACE/$userpatches/ armbian 
         cd armbian
         sudo ./compile.sh  BOARD= $BOARD BRANCH= $BRANCH RELEASE= $RELEASE BUILD_MINIMAL= $BUILD_MINIMAL BUILD_DESKTOP= $BUILD_DESKTOP KERNEL_ONLY= $KERNEL_ONLY KERNEL_CONFIGURE= $KERNEL_CONFIGURE 
         echo "DATE=$(date +"%Y-%m-%d %H:%M:%S")" >> $GITHUB_ENV
