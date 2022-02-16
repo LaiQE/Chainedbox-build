@@ -14,9 +14,17 @@ on:
         required: false
         default: 'false'
       armbianboard:
-        description: 'Set Board E.g [ odroidc4 / lepotato ]'
+        description: 'Set Board E.g [ odroidc4 / rock64 ]'
         required: false
-        default: 'lepotato'
+        default: 'rock64'
+      armbianbranch:
+        description: '设置版本分支，例如： [ current / edge ]'
+        required: false
+        default: 'current'
+      armbianrelease:
+        description: '设置发布系统版本，例如： [ buster / bullseye ]'
+        required: false
+        default: 'bullseye'
   schedule:
     - cron: '0 17 * * 0'
 
@@ -44,9 +52,24 @@ jobs:
         if [ -n "${{ github.event.inputs.armbianboard }}" ]; then
            ARMBIAN_BOARD=${{ github.event.inputs.armbianboard }}
         else
-           ARMBIAN_BOARD=lepotato
+           ARMBIAN_BOARD=rock64
         fi
         echo "ARMBIAN_BOARD=${ARMBIAN_BOARD}" >> $GITHUB_ENV
+        
+        if [ -n "${{ github.event.inputs.armbianbranch }}" ]; then
+           ARMBIAN_BRANCH=${{ github.event.inputs.armbianbranch }}
+        else
+           ARMBIAN_BRANCH=current
+        fi
+        echo "ARMBIAN_BRANCH=${ARMBIAN_BRANCH}" >> $GITHUB_ENV
+        
+        if [ -n "${{ github.event.inputs.armbianrelease }}" ]; then
+           ARMBIAN_RELEASE=${{ github.event.inputs.armbianboard }}
+        else
+           ARMBIAN_RELEASE=bullseye
+        fi
+        echo "ARMBIAN_RELEASE=${ARMBIAN_RELEASE}" >> $GITHUB_ENV
+        
         sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo -E apt-get -qq update
         sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
@@ -73,7 +96,7 @@ jobs:
       run: |
         cd build/
         sudo chmod +x compile.sh
-        sudo ./compile.sh  BOARD=${{ env.ARMBIAN_BOARD }} BRANCH=current RELEASE=buster BUILD_MINIMAL=no BUILD_DESKTOP=no KERNEL_ONLY=no KERNEL_CONFIGURE=no COMPRESS_OUTPUTIMAGE=sha,img
+        sudo ./compile.sh  BOARD=${{ env.ARMBIAN_BOARD }} BRANCH==${{ env.ARMBIAN_BRANCH }}  RELEASE==${{ env.ARMBIAN_RELEASE }}  BUILD_MINIMAL=no BUILD_DESKTOP=no KERNEL_ONLY=no KERNEL_CONFIGURE=no COMPRESS_OUTPUTIMAGE=sha,img
         [ -e ./.config ] && cp -f ./.config ./output/images/.config
         echo "::set-output name=status::success"
 
