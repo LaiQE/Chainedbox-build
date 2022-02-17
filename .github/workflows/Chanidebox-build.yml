@@ -23,7 +23,7 @@ on:
         required: false
         default: 'false'
       armbianboard:
-        description: '设置机型： [ l1pro / chainedbox ]'
+        description: '设置机型： [ l1pro / chainedbox /rock64 ]'
         required: false
         default: 'l1pro'
       armbianbranch:
@@ -93,6 +93,7 @@ jobs:
       run: |
         git clone --depth 1 https://github.com/armbian/build.git
         sudo cp -r ./config ./build
+        sudo mv ./userpatches ./build
 
     - name: SSH连接到 Actions @ Ctrl+C 确定, Ctrl+D 退出
       uses: P3TERX/ssh2actions@main
