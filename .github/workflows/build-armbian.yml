@@ -1,28 +1,37 @@
-#==================================================================
-# Description: Automatically Build Armbian For Amlogic S9xxx STB
-# Copyright (C) 2021 https://github.com/test/build-armbian
-#==================================================================
+#===============================================
+# Description: 我家云 Armbian 编译脚本
+# File name: Chainedbox-build.yml
+# Lisence: MIT
+# Author: WingonWu
+# https://github.com/WingonWu/Chainedbox-build
+#===============================================
 
-name: Build Armbian For Amlogic
+name: Build Armbian For Chainedbox
 
 on:
+  # 在推送或拉取请求事件上触发工作流，但仅适用于主分支
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  # 允许您从“操作”选项卡手动运行此工作流
   repository_dispatch:
   workflow_dispatch:
     inputs:
       ssh:
-        description: 'SSH connection'
+        description: 'SSH 连接'
         required: false
         default: 'false'
       armbianboard:
-        description: 'Set Board E.g [ odroidc4 / rock64 ]'
+        description: '设置机型： [ odroidc4 / rock64 ]'
         required: false
         default: 'rock64'
       armbianbranch:
-        description: '设置版本分支，例如： [ current / edge ]'
+        description: '设置版本分支： [ current / edge ]'
         required: false
         default: 'current'
       armbianrelease:
-        description: '设置发布系统版本，例如： [ buster / bullseye ]'
+        description: '设置发布系统版本： [ buster / bullseye ]'
         required: false
         default: 'bullseye'
   schedule:
@@ -45,7 +54,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Initialization environment
+    - name: 初始化环境
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
@@ -64,7 +73,7 @@ jobs:
         echo "ARMBIAN_BRANCH=${ARMBIAN_BRANCH}" >> $GITHUB_ENV
         
         if [ -n "${{ github.event.inputs.armbianrelease }}" ]; then
-           ARMBIAN_RELEASE=${{ github.event.inputs.armbianboard }}
+           ARMBIAN_RELEASE=${{ github.event.inputs.armbianrelease }}
         else
            ARMBIAN_RELEASE=bullseye
         fi
@@ -79,19 +88,19 @@ jobs:
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
 
-    - name: Download source code
+    - name: 下载源代码
       id: down
       run: |
         git clone --depth 1 https://github.com/armbian/build.git
         
-    - name: SSH connection to Actions @ Ctrl+C to enter, Ctrl+D to exit
+    - name: SSH连接到 Actions @ Ctrl+C 确定, Ctrl+D 退出
       uses: P3TERX/ssh2actions@main
       if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
       env:
         TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
 
-    - name: Build Armbian for ${{ env.ARMBIAN_BOARD }}
+    - name: 编译 Armbian for ${{ env.ARMBIAN_BOARD }}
       id: build
       run: |
         cd build/
@@ -100,7 +109,7 @@ jobs:
         [ -e ./.config ] && cp -f ./.config ./output/images/.config
         echo "::set-output name=status::success"
 
-    - name: Build kernel
+    - name: 编译 kernel
       id: kernel
       if: steps.build.outputs.status == 'success'
       run: |
@@ -111,13 +120,13 @@ jobs:
         echo "FILE_DATE=$(date +"%Y.%m.%d.%H%M")" >> $GITHUB_ENV
         echo "::set-output name=status::success"
 
-    - name: Upload Armbian image to Actions
+    - name: 上传 Armbian 镜像到 Actions
       uses: kittaakos/upload-artifact-as-is@master
       if: steps.build.outputs.status == 'success'
       with:
         path: ${{ env.FILEPATH }}/
 
-    - name: Upload Armbian image to Release
+    - name: 上传 Armbian 镜像到 Release
       uses: softprops/action-gh-release@v1
       if: steps.build.outputs.status == 'success'
       env:
@@ -126,9 +135,12 @@ jobs:
         tag_name: armbian_amlogic-${{ env.ARMBIAN_BOARD }}_${{ env.FILE_DATE }}
         files: ${{ env.FILEPATH }}/*
         body: |
-          This is Armbian image for amlogic-${{ env.ARMBIAN_BOARD }}
+            我家云 Armbian 固件
+            * 固件信息
+            默认用户名: root
+            默认密码: 1234
 
-    - name: Delete older releases
+    - name: 删除旧版本
       uses: dev-drprasad/delete-older-releases@master
       if: env.DELETE_RELEASE == 'true'
       with:
@@ -137,7 +149,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Delete older workflow runs and artifacts
+    - name: 删除旧的工作流运行和工件
       uses: Mattraks/delete-workflow-runs@main
       if: env.DELETE_ARTIFACTS == 'true'
       with:

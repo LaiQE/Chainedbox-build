@@ -135,10 +135,7 @@ jobs:
         tag_name: armbian_amlogic-${{ env.ARMBIAN_BOARD }}_${{ env.FILE_DATE }}
         files: ${{ env.FILEPATH }}/*
         body: |
-            我家云 Armbian 固件
-            * 固件信息
-            默认用户名: root
-            默认密码: 1234
+          This is Armbian image for amlogic-${{ env.ARMBIAN_BOARD }}
 
     - name: 删除旧版本
       uses: dev-drprasad/delete-older-releases@master

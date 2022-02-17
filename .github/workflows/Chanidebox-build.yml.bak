@@ -58,14 +58,58 @@ jobs:
       run: |
         df -hT $PWD
         git clone $REPO_URL -b $REPO_BRANCH armian
-        cd $GITHUB_WORKSPACE
-        ls
         ln -sf /workdir/armian $GITHUB_WORKSPACE/armian
-        cp –r $GITHUB_WORKSPACE/userpatches /workdir/armian
+        cd $GITHUB_WORKSPACE
+        echo “ GITHUB_WORKSPACE LS ”
+        ls
+        mv $GITHUB_WORKSPACE/userpatches /workdir/armian
         cd armian
         useVersionInfo=$(git show -s --date=short --format="Author: %an<br/>date: %cd<br/>commit: %s<br/>commit hash: %H")
         echo "useVersionInfo=$useVersionInfo" >> $GITHUB_ENV
+        echo $useVersionInfo
+        echo armbian ls
         ls
-        cd / && ls
-        
+      
+        sudo ./compile.sh BOARD=rock64 BRANCH=current BUILD_MINIMAL=no BUILD_DESKTOP=no KERNEL_ONLY=yes KERNEL_CONFIGURE=yes
+    - name: 系统镜像打包
+      run: |
 
+          rm -rf ./artifact/
+
+          mkdir -p ./artifact/
+
+          find ./output/ -name "*img" | xargs -i sudo xz -v {} 
+
+          find ./output/ -name "*img*" | xargs -i sudo mv -f {} ./artifact/
+
+    - name: Create Release
+
+      id: create_release
+
+      uses: ncipollo/release-action@v1
+
+      env:
+
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+
+      with:
+
+        artifacts: "./artifact//*.*"
+
+        allowUpdates: true 
+
+        commit: master 
+
+        tag: ${{ env.BUILD_DATE }}_master_R6300V2_iZRT_${{ env.MERLIN_TAG }}
+
+        body: |
+
+          this is only a latest build from master
+
+          version: https://github.com/RMerl/asuswrt-merlin.ng/${{ env.MERLIN_VERSION }}
+
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+        draft: false
+
+        prerelease: false
