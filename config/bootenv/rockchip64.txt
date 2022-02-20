@@ -1,0 +1,4 @@
+verbosity=1
+bootlogo=false
+load_addr=0x39000000
+fdtfile=/dtb/rockchip/rk3328-l1pro-1296mhz.dtb
