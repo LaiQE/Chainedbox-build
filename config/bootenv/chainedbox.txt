@@ -7,4 +7,4 @@ extraargs=usbcore.autosuspend=-1
 extraboardargs=
 fdtfile=/dtb/rockchip/rk3328-l1pro-1296mhz.dtb
 usbstoragequirks=0x2537:0x1066:u,0x2537:0x1068:u
-load_addr "0x39000000"
+load_addr=0x39000000
