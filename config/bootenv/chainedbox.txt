@@ -1,6 +1,4 @@
 verbosity=7
-bootlogo=false
-load_addr "0x39000000"verbosity=7
 rootdev=/dev/mmcblk0p1
 rootflags=rw
 extraargs=usbcore.autosuspend=-1
