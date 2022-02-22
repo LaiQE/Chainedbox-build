@@ -93,8 +93,6 @@ jobs:
       run: |
         git clone --depth 1 https://github.com/armbian/build.git
         sudo cp -r ./config ./build
-        rm -rf ./build/patch/kernel
-        rm -rf ./build/patch/u-boot
     
 
     - name: SSH连接到 Actions @ Ctrl+C 确定, Ctrl+D 退出
