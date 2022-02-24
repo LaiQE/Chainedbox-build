@@ -93,6 +93,7 @@ jobs:
       run: |
         git clone --depth 1 https://github.com/armbian/build.git
         sudo cp -r ./config ./build
+        sudo cp -r ./userpatches ./build
     
 
     - name: SSH连接到 Actions @ Ctrl+C 确定, Ctrl+D 退出
@@ -109,6 +110,10 @@ jobs:
         sudo chmod +x compile.sh
         sudo ./compile.sh  BOARD=${{ env.ARMBIAN_BOARD }} BRANCH=${{ env.ARMBIAN_BRANCH }}  RELEASE=${{ env.ARMBIAN_RELEASE }}  BUILD_MINIMAL=no BUILD_DESKTOP=no KERNEL_ONLY=no KERNEL_CONFIGURE=no COMPRESS_OUTPUTIMAGE=sha,img
         [ -e ./.config ] && cp -f ./.config ./output/images/.config
+        losetup /dev/loop10 ./output/images/*.img
+        dd if=./configtrust.bin of=/dev/loop10 seek=24576 bs=512
+        dd if=./configidbloader.bin of=/dev/loop10 seek=64 bs=512
+        dd if=./configuboot.img of=/dev/loop10 seek=16384 bs=512
         echo "::set-output name=status::success"
 
     - name: 打包 Armbian [ ${{ env.ARMBIAN_BOARD }} ]
