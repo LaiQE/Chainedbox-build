@@ -6,7 +6,7 @@
 # https://github.com/WingonWu/Chainedbox-build
 #===============================================
 
-name: Build Armbian For Chainedbox
+name: Build Armbian For Chainedbox 5.15.y
 
 on:
   # 在推送或拉取请求事件上触发工作流，但仅适用于主分支
