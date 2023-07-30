@@ -48,7 +48,7 @@ on:
 
         required: false
 
-        default: 'l1pro'
+        default: 'chainedbox'
 
       armbianbranch:
 
